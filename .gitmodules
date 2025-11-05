@@ -1,0 +1,3 @@
+[submodule "external/SBWT"]
+	path = external/SBWT
+	url = https://github.com/algbio/SBWT

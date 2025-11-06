@@ -18,7 +18,6 @@ add_subdirectory(external/essentials)
 include_directories(
     ${CMAKE_SOURCE_DIR}/external
     ${CMAKE_SOURCE_DIR}/external/SBWT/SeqIO/include
-    ${CMAKE_SOURCE_DIR}/external/SBWT/include/sbwt
     ${CMAKE_BINARY_DIR}/sbwt_build/external/sdsl-lite/build/external/libdivsufsort/include
 )
 
@@ -46,8 +45,10 @@ target_link_libraries(sbwt_benchmark
     ${CMAKE_BINARY_DIR}/sbwt_build/external/KMC/build/libkmc_tools.a
     sdsl
     ESSENTIALS
+    z
 )
 
 target_link_libraries(sshash_benchmark
     sshash_static
+    z
 )

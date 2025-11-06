@@ -1,9 +1,16 @@
 #include <iostream>
 
-#include "throwing_streams.hh"
-#include "globals.hh"
-#include "variants.hh"
-#include "SeqIO/SeqIO.hh"
+#include "sshash/external/pthash/external/cmd_line_parser/include/parser.hpp"
+#include "sshash/external/gz/zip_stream.hpp"
+#include "sshash/external/gz/zip_stream.cpp"
+
+#include "SBWT/include/sbwt/throwing_streams.hh"
+#include "SBWT/include/sbwt/globals.hh"
+#include "SBWT/include/sbwt/variants.hh"
+#include "SBWT/include/sbwt/SubsetMatrixSelectSupport.hh"
+
+#include "SBWT/SeqIO/include/SeqIO/SeqIO.hh"
+
 #include "essentials.hpp"
 
 using namespace sbwt;
@@ -55,7 +62,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
                                                 essentials::get_random_seed());
 
     essentials::logger("building select support for `get_kmer_fast`...");
-    SubsetMatrixSelectSupport ss = index.get_subset_rank_structure().build_select_support();
+    SubsetMatrixSelectSupport<sdsl::bit_vector> ss(index.get_subset_rank_structure());
     essentials::logger("DONE");
 
     std::string kmer(k, 0);
@@ -138,14 +145,49 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
     }
 }
 
-int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " index.sbwt" << std::endl;
-        std::cerr << "Currently only supports the plain matrix variant." << std::endl;
-        return 1;
-    }
+void streaming_query_from_fastq_file(plain_matrix_sbwt_t const& index,    //
+                                     essentials::json_lines& perf_stats,  //
+                                     std::istream& is)                    //
+{
+    essentials::timer<std::chrono::high_resolution_clock, std::chrono::microseconds> t;
 
-    std::string index_filename = argv[1];
+    t.start();
+    uint64_t total_num_kmers = 0;
+    std::string line;
+    const uint64_t k = index.get_k();
+    while (!is.eof()) {
+        /* We assume the file is well-formed, i.e., there are exactly 4 lines per read. */
+        std::getline(is, line);  // skip first header line
+        std::getline(is, line);
+        if (line.size() >= k) {
+            auto v = index.streaming_search(line.c_str(), line.size());
+            total_num_kmers += v.size();
+            essentials::do_not_optimize_away(v[0]);
+        }
+        std::getline(is, line);  // skip '+'
+        std::getline(is, line);  // skip score
+    }
+    t.stop();
+
+    perf_stats.add("total_num_kmers", total_num_kmers);
+    perf_stats.add("elapsed_ms", t.elapsed() / 1000);
+    perf_stats.add("avg_nanosec_per_kmer", (t.elapsed() * 1000) / total_num_kmers);
+}
+
+int main(int argc, char** argv)  //
+{
+    cmd_line_parser::parser parser(argc, argv);
+    parser.add("index_filename", "SBWT index filename. Must be the `plain-matrix` variant.", "-i",
+               true);
+    parser.add("query_filename", "Must be a fastq file compressed with gzip (extension fastq.gz).",
+               "-q", false);
+    if (!parser.parse()) return 0;
+    auto index_filename = parser.get<std::string>("index_filename");
+
+    std::string query_filename("");
+    if (parser.parsed("query_filename")) {
+        query_filename = parser.get<std::string>("query_filename");
+    }
 
     plain_matrix_sbwt_t index;
 
@@ -166,7 +208,21 @@ int main(int argc, char** argv) {
     perf_stats.add("index_filename", index_filename.c_str());
     perf_stats.add("k", index.get_k());
 
-    perf_test_lookup(index, perf_stats);
+    if (query_filename.empty()) {
+        perf_test_lookup(index, perf_stats);
+    } else {
+        std::ifstream is(query_filename.c_str());
+        if (!is.good()) {
+            std::cerr << "error in opening the file '" + query_filename + "'" << std::endl;
+            return 1;
+        }
+        perf_stats.add("query_filename", query_filename.c_str());
+        essentials::logger("performing queries from file '" + query_filename + "'...");
+        zip_istream zis(is);
+        streaming_query_from_fastq_file(index, perf_stats, zis);
+        is.close();
+        essentials::logger("DONE");
+    }
 
     perf_stats.print();
 

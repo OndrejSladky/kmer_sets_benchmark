@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "sshash/tools/common.hpp"
+#include "sshash/include/streaming_query.hpp"
 
 #include "sshash/src/dictionary.cpp"
 #include "sshash/src/query.cpp"
@@ -93,13 +94,57 @@ void perf_test_lookup_access(dictionary_type const& index, essentials::json_line
     }
 }
 
-int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " index.sshash" << std::endl;
-        return 1;
-    }
+template <typename Query>
+void streaming_query_from_fastq_file(dictionary_type const& index,        //
+                                     essentials::json_lines& perf_stats,  //
+                                     std::istream& is)                    //
+{
+    essentials::timer<std::chrono::high_resolution_clock, std::chrono::microseconds> t;
 
-    std::string index_filename = argv[1];
+    t.start();
+    uint64_t total_num_kmers = 0;
+    std::string line;
+    const uint64_t k = index.k();
+    Query query(&index);
+    while (!is.eof()) {
+        query.reset();
+        /* We assume the file is well-formed, i.e., there are exactly 4 lines per read. */
+        std::getline(is, line);  // skip first header line
+        std::getline(is, line);
+        if (line.size() >= k) {
+            const uint64_t num_kmers = line.size() - k + 1;
+            total_num_kmers += num_kmers;
+            for (uint64_t i = 0; i != num_kmers; ++i) {
+                char const* kmer = line.data() + i;
+                query.lookup(kmer);
+            }
+        }
+        std::getline(is, line);  // skip '+'
+        std::getline(is, line);  // skip score
+    }
+    t.stop();
+
+    perf_stats.add("total_num_kmers", total_num_kmers);
+    perf_stats.add("num_positive_kmers", query.num_positive_lookups());
+    perf_stats.add("num_negative_kmers", query.num_negative_lookups());
+    perf_stats.add("num_invalid_kmers", query.num_invalid_lookups());
+    perf_stats.add("elapsed_ms", t.elapsed() / 1000);
+    perf_stats.add("avg_nanosec_per_kmer", (t.elapsed() * 1000) / total_num_kmers);
+}
+
+int main(int argc, char** argv)  //
+{
+    cmd_line_parser::parser parser(argc, argv);
+    parser.add("index_filename", "SSHash index filename.", "-i", true);
+    parser.add("query_filename", "Must be a fastq file compressed with gzip (extension fastq.gz).",
+               "-q", false);
+    if (!parser.parse()) return 0;
+    auto index_filename = parser.get<std::string>("index_filename");
+
+    std::string query_filename("");
+    if (parser.parsed("query_filename")) {
+        query_filename = parser.get<std::string>("query_filename");
+    }
 
     essentials::logger("loading index...");
     dictionary_type index;
@@ -112,7 +157,29 @@ int main(int argc, char** argv) {
     perf_stats.add("m", index.m());
     perf_stats.add("canonical", index.canonical() ? "true" : "false");
 
-    perf_test_lookup_access(index, perf_stats);
+    if (query_filename.empty()) {
+        perf_test_lookup_access(index, perf_stats);
+    } else  //
+    {
+        using regular_query = streaming_query<dictionary_type, false>;
+        using canonical_query = streaming_query<dictionary_type, true>;
+
+        std::ifstream is(query_filename.c_str());
+        if (!is.good()) {
+            std::cerr << "error in opening the file '" + query_filename + "'" << std::endl;
+            return 1;
+        }
+        perf_stats.add("query_filename", query_filename.c_str());
+        essentials::logger("performing queries from file '" + query_filename + "'...");
+        zip_istream zis(is);
+        if (index.canonical()) {
+            streaming_query_from_fastq_file<canonical_query>(index, perf_stats, zis);
+        } else {
+            streaming_query_from_fastq_file<regular_query>(index, perf_stats, zis);
+        }
+        is.close();
+        essentials::logger("DONE");
+    }
 
     perf_stats.print();
 

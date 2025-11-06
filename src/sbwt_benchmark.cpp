@@ -44,14 +44,14 @@ void compute_reverse_complement(char const* input, char* output, uint64_t size) 
     }
 }
 
-void perf_test_lookup(plain_matrix_sbwt_t const& dict,     //
+void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
                       essentials::json_lines& perf_stats)  //
 {
     constexpr uint64_t num_queries = 1'000'000;
     constexpr uint64_t runs = 5;
-    const uint64_t k = dict.get_k();
+    const uint64_t k = index.get_k();
 
-    essentials::uniform_int_rng<uint64_t> distr(0, dict.number_of_kmers() - 1,
+    essentials::uniform_int_rng<uint64_t> distr(0, index.number_of_kmers() - 1,
                                                 essentials::get_random_seed());
 
     std::string kmer(k, 0);
@@ -65,7 +65,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& dict,     //
 
         for (uint64_t i = 0; i != num_queries; ++i) {
             uint64_t id = distr.gen();
-            dict.get_kmer(id, kmer.data());
+            index.get_kmer(id, kmer.data());
             if ((i & 1) == 0) {
                 /* transform 50% of the kmers into their reverse complements */
                 compute_reverse_complement(kmer.data(), kmer_rc.data(), k);
@@ -79,7 +79,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& dict,     //
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
-                auto res = dict.search(string.c_str());
+                auto res = index.search(string.c_str());
                 essentials::do_not_optimize_away(res);
             }
         }
@@ -103,7 +103,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& dict,     //
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
-                auto res = dict.search(string.c_str());
+                auto res = index.search(string.c_str());
                 essentials::do_not_optimize_away(res);
             }
         }
@@ -123,7 +123,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& dict,     //
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto id : access_queries) {
-                dict.get_kmer(id, kmer.data());
+                index.get_kmer(id, kmer.data());
                 essentials::do_not_optimize_away(kmer[0]);
             }
         }
@@ -141,9 +141,9 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    plain_matrix_sbwt_t sbwt;
-
     std::string index_filename = argv[1];
+
+    plain_matrix_sbwt_t index;
 
     {
         throwing_ifstream in(index_filename, ios::binary);
@@ -152,17 +152,15 @@ int main(int argc, char** argv) {
             std::cerr << "Error: only plain-matrix variant is supported currently" << std::endl;
             return 1;
         }
-        std::cout << "loading the index..." << std::endl;
-        sbwt.load(in.stream);
-        std::cout << "done" << std::endl;
+        index.load(in.stream);
     }
 
     essentials::json_lines perf_stats;
 
     perf_stats.add("index_filename", index_filename.c_str());
-    perf_stats.add("k", sbwt.get_k());
+    perf_stats.add("k", index.get_k());
 
-    perf_test_lookup(sbwt, perf_stats);
+    perf_test_lookup(index, perf_stats);
 
     perf_stats.print();
 

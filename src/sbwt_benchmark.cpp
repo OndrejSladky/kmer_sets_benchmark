@@ -54,6 +54,10 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
     essentials::uniform_int_rng<uint64_t> distr(0, index.number_of_kmers() - 1,
                                                 essentials::get_random_seed());
 
+    essentials::logger("building select support for `get_kmer_fast`...");
+    SubsetMatrixSelectSupport ss = index.get_subset_rank_structure().build_select_support();
+    essentials::logger("DONE");
+
     std::string kmer(k, 0);
     std::string kmer_rc(k, 0);
 
@@ -65,7 +69,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
 
         for (uint64_t i = 0; i != num_queries; ++i) {
             uint64_t id = distr.gen();
-            index.get_kmer(id, kmer.data());
+            index.get_kmer_fast(id, kmer.data(), ss);
             if ((i & 1) == 0) {
                 /* transform 50% of the kmers into their reverse complements */
                 compute_reverse_complement(kmer.data(), kmer_rc.data(), k);
@@ -115,15 +119,15 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
 
     {
         // perf test access
-        constexpr uint64_t num_queries_access = 100'000;
         std::vector<uint64_t> access_queries;
-        access_queries.reserve(num_queries_access);
-        for (uint64_t i = 0; i != num_queries_access; ++i) access_queries.push_back(distr.gen());
+        access_queries.reserve(num_queries);
+        for (uint64_t i = 0; i != num_queries; ++i) access_queries.push_back(distr.gen());
         timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto id : access_queries) {
-                index.get_kmer(id, kmer.data());
+                // index.get_kmer(id, kmer.data());
+                index.get_kmer_fast(id, kmer.data(), ss);
                 essentials::do_not_optimize_away(kmer[0]);
             }
         }
@@ -146,6 +150,7 @@ int main(int argc, char** argv) {
     plain_matrix_sbwt_t index;
 
     {
+        essentials::logger("loading index...");
         throwing_ifstream in(index_filename, ios::binary);
         std::string variant = load_string(in.stream);  // read variant type
         if (variant != "plain-matrix") {
@@ -153,6 +158,7 @@ int main(int argc, char** argv) {
             return 1;
         }
         index.load(in.stream);
+        essentials::logger("DONE");
     }
 
     essentials::json_lines perf_stats;

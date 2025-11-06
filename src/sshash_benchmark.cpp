@@ -101,8 +101,10 @@ int main(int argc, char** argv) {
 
     std::string index_filename = argv[1];
 
+    essentials::logger("loading index...");
     dictionary_type index;
     load_dictionary(index, index_filename, /* verbose */ false);
+    essentials::logger("DONE");
 
     essentials::json_lines perf_stats;
     perf_stats.add("index_filename", index_filename.c_str());

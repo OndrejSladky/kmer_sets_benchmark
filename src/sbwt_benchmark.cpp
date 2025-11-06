@@ -153,7 +153,7 @@ void streaming_query_from_fastq_file(plain_matrix_sbwt_t const& index,    //
 
     t.start();
     uint64_t total_num_kmers = 0;
-    uint64_t num_positive_kmers = 0;
+    // uint64_t num_positive_kmers = 0;
     std::string line;
     const uint64_t k = index.get_k();
     while (!is.eof()) {
@@ -162,7 +162,7 @@ void streaming_query_from_fastq_file(plain_matrix_sbwt_t const& index,    //
         std::getline(is, line);
         if (line.size() >= k) {
             auto v = index.streaming_search(line.c_str(), line.size());
-            for (auto x : v) num_positive_kmers += x >= 0;
+            // for (auto x : v) num_positive_kmers += x >= 0;
             total_num_kmers += v.size();
             essentials::do_not_optimize_away(v[0]);
         }
@@ -172,7 +172,7 @@ void streaming_query_from_fastq_file(plain_matrix_sbwt_t const& index,    //
     t.stop();
 
     perf_stats.add("total_num_kmers", total_num_kmers);
-    perf_stats.add("num_positive_kmers", num_positive_kmers);
+    // perf_stats.add("num_positive_kmers", num_positive_kmers);
     perf_stats.add("elapsed_ms", t.elapsed() / 1000);
     perf_stats.add("avg_nanosec_per_kmer", (t.elapsed() * 1000) / total_num_kmers);
 }

@@ -38,15 +38,18 @@ void perf_test_lookup_access(dictionary_type const& index, essentials::json_line
             }
         }
 
+        uint64_t num_positive_kmers = 0;
         timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
                 auto res = index.lookup(string.c_str());
                 essentials::do_not_optimize_away(res.kmer_id);
+                num_positive_kmers += res.kmer_id != constants::invalid_uint64;
             }
         }
         t.stop();
+        std::cout << "num_positive_kmers = " << num_positive_kmers << std::endl;
         double nanosec_per_lookup = t.elapsed() / (runs * lookup_queries.size());
         std::cout << "positive lookup (avg_nanosec_per_kmer) = " << nanosec_per_lookup << std::endl;
         perf_stats.add("positive lookup (avg_nanosec_per_kmer)", nanosec_per_lookup);

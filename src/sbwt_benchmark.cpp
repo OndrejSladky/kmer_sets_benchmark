@@ -91,7 +91,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
-                int64_t res = index.search(string.c_str());
+                int64_t res = index.search(string.c_str());  // this only searches one strand
                 essentials::do_not_optimize_away(res);
                 num_positive_kmers += res >= 0;
             }

@@ -86,15 +86,18 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
             }
         }
 
+        uint64_t num_positive_kmers = 0;
         timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
-                auto res = index.search(string.c_str());
+                int64_t res = index.search(string.c_str());
                 essentials::do_not_optimize_away(res);
+                num_positive_kmers += res >= 0;
             }
         }
         t.stop();
+        std::cout << "num_positive_kmers = " << num_positive_kmers << std::endl;
         double nanosec_per_lookup = t.elapsed() / (runs * lookup_queries.size());
         std::cout << "positive lookup (avg_nanosec_per_kmer) = " << nanosec_per_lookup << std::endl;
         perf_stats.add("positive lookup (avg_nanosec_per_kmer)", nanosec_per_lookup);
@@ -114,7 +117,7 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
-                auto res = index.search(string.c_str());
+                int64_t res = index.search(string.c_str());
                 essentials::do_not_optimize_away(res);
             }
         }
@@ -125,7 +128,8 @@ void perf_test_lookup(plain_matrix_sbwt_t const& index,    //
     }
 
     {
-        // perf test access
+        /* perf test access */
+
         std::vector<uint64_t> access_queries;
         access_queries.reserve(num_queries);
         for (uint64_t i = 0; i != num_queries; ++i) access_queries.push_back(distr.gen());
@@ -161,7 +165,7 @@ void streaming_query_from_fastq_file(plain_matrix_sbwt_t const& index,    //
         std::getline(is, line);  // skip first header line
         std::getline(is, line);
         if (line.size() >= k) {
-            auto v = index.streaming_search(line.c_str(), line.size());
+            std::vector<int64_t> v = index.streaming_search(line.c_str(), line.size());
             // for (auto x : v) num_positive_kmers += x >= 0;
             total_num_kmers += v.size();
             essentials::do_not_optimize_away(v[0]);

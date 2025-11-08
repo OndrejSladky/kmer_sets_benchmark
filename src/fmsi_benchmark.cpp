@@ -5,12 +5,9 @@
 #include "sshash/external/gz/zip_stream.cpp"
 
 #include "fmsi/src/fms_index.h"
-
-// #include "SBWT/SeqIO/include/SeqIO/SeqIO.hh"
+#include "fmsi/src/QSufSort.c"
 
 #include "essentials.hpp"
-
-using namespace sbwt;
 
 using timer_type = essentials::timer<std::chrono::high_resolution_clock, std::chrono::nanoseconds>;
 
@@ -48,10 +45,10 @@ void compute_reverse_complement(char const* input, char* output, uint64_t size) 
     }
 }
 
-void perf_test_lookup(fms_index const& index,              //
+void perf_test_lookup(fms_index& index,                    //
                       essentials::json_lines& perf_stats)  //
 {
-    // constexpr uint64_t num_queries = 1'000'000;
+    constexpr uint64_t num_queries = 1'000'000;
     constexpr uint64_t runs = 5;
     const uint64_t k = index.k;
 
@@ -70,7 +67,7 @@ void perf_test_lookup(fms_index const& index,              //
         {
             std::ifstream in("kmers.txt");
             std::string s;
-            while (in) {
+            for (uint64_t i = 0; i != num_queries and in; ++i) {
                 in >> s;
                 lookup_queries.push_back(s);
             }
@@ -82,9 +79,8 @@ void perf_test_lookup(fms_index const& index,              //
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto& string : lookup_queries) {
                 int64_t res =
-                    single_query_order(index, string.c_str(), k);  // this only searches one strand
+                    single_query_order(index, string.data(), k);  // this only searches one strand
                 if (res < 0) {
-                    // seq_io::reverse_complement_c_string(string.data(), k);
                     char* rc = ReverseComplementString(string.data(), k);
                     res = single_query_order(index, rc, k);
                     free(rc);
@@ -112,8 +108,8 @@ void perf_test_lookup(fms_index const& index,              //
         timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
-            for (auto const& string : lookup_queries) {
-                int64_t res = single_query_order(index, string.c_str(), k);
+            for (auto& string : lookup_queries) {
+                int64_t res = single_query_order(index, string.data(), k);
                 essentials::do_not_optimize_away(res);
             }
         }

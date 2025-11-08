@@ -42,6 +42,7 @@ void perf_test_lookup_access(dictionary_type const& index, essentials::json_line
             // write kmers to output file
             std::ofstream out("kmers.txt");
             for (auto const& string : lookup_queries) out << string << '\n';
+            out << '\n';
             out.close();
         }
 

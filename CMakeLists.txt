@@ -34,12 +34,15 @@ MESSAGE(STATUS "Compiling for processor: ${CMAKE_SYSTEM_PROCESSOR}")
 MESSAGE(STATUS "Compiling with flags:${CMAKE_CXX_FLAGS}")
 
 # === Step 3: Executable ===
+add_executable(fmsi_benchmark src/fmsi_benchmark.cpp)
 add_executable(sbwt_benchmark src/sbwt_benchmark.cpp)
 add_executable(sshash_benchmark src/sshash_benchmark.cpp)
 
 # === Step 4: Link libraries ===
 
 target_link_libraries(fmsi_benchmark
+    sdsl
+    ESSENTIALS
     z
 )
 

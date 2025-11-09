@@ -142,37 +142,109 @@ void perf_test_lookup(fms_index& index,                    //
     // }
 }
 
-// void streaming_query_from_fastq_file(plain_matrix_sbwt_t const& index,    //
-//                                      essentials::json_lines& perf_stats,  //
-//                                      std::istream& is)                    //
-// {
-//     essentials::timer<std::chrono::high_resolution_clock, std::chrono::microseconds> t;
+/*
+    Version of
 
-//     t.start();
-//     uint64_t total_num_kmers = 0;
-//     // uint64_t num_positive_kmers = 0;
-//     std::string line;
-//     const uint64_t k = index.get_k();
-//     while (!is.eof()) {
-//         /* We assume the file is well-formed, i.e., there are exactly 4 lines per read. */
-//         std::getline(is, line);  // skip first header line
-//         std::getline(is, line);
-//         if (line.size() >= k) {
-//             std::vector<int64_t> v = index.streaming_search(line.c_str(), line.size());
-//             // for (auto x : v) num_positive_kmers += x >= 0;
-//             total_num_kmers += v.size();
-//             essentials::do_not_optimize_away(v[0]);
-//         }
-//         std::getline(is, line);  // skip '+'
-//         std::getline(is, line);  // skip score
-//     }
-//     t.stop();
+    template <bool maximized_ones = false>
+    void query_kmers_streaming(fms_index& index, char* sequence, char* rc_sequence,
+        size_t sequence_length, int k, bool output_orders, std::ostream& of);
 
-//     perf_stats.add("total_num_kmers", total_num_kmers);
-//     // perf_stats.add("num_positive_kmers", num_positive_kmers);
-//     perf_stats.add("elapsed_ms", t.elapsed() / 1000);
-//     perf_stats.add("avg_nanosec_per_kmer", (t.elapsed() * 1000) / total_num_kmers);
-// }
+    where maximized_ones = true, output_orders = true, and without IO overhead.
+*/
+template <bool maximized_ones = false>
+std::vector<int64_t> query_kmers_streaming(fms_index& index, char* sequence, char* rc_sequence,
+                                           size_t sequence_length, int k, bool output_orders) {
+    std::vector<int64_t> result(sequence_length - k + 1, -1);
+    // Use saturating counter to ensure that RC strings are visited as forward strings.
+    bool should_swap = index.predictor.predict_swap();
+    if (should_swap) { std::swap(sequence, rc_sequence); }
+    // Search on the forward strand.
+    int forward_predictor_result = 0, backward_predictor_result = 0;
+    size_t sa_start = -1, sa_end = -1;
+    for (size_t i = 0; i <= sequence_length - k; ++i) {
+        size_t i_back = sequence_length - k - i;
+        if (sa_start == sa_end) {
+            get_range_with_pattern(index, sa_start, sa_end, sequence + i_back, k);
+        } else {
+            extend_range_with_klcp(index, sa_start, sa_end);
+            update_range(index, sa_start, sa_end, nucleotideToInt[(uint8_t)sequence[i_back]]);
+        }
+        result[i_back] = kmer_order_if_present(index, sa_start, sa_end);
+        if (result[i_back] >= 0)
+            forward_predictor_result++;
+        else
+            forward_predictor_result--;
+    }
+
+    // Search on the reverse strand.
+    sa_start = sa_end = -1;
+    for (size_t i = 0; i <= sequence_length - k; ++i) {
+        if ((result[i] >= 0) || result[i] == 1 || (result[i] == 0)) {
+            // This position can be skipped for performance.
+            sa_start = sa_end = -1;
+            continue;
+        }
+        size_t i_back = sequence_length - k - i;
+        if (sa_start == sa_end) {
+            get_range_with_pattern(index, sa_start, sa_end, rc_sequence + i_back, k);
+        } else {
+            extend_range_with_klcp(index, sa_start, sa_end);
+            update_range(index, sa_start, sa_end, nucleotideToInt[(uint8_t)rc_sequence[i_back]]);
+        }
+        int64_t res = kmer_order_if_present(index, sa_start, sa_end);
+        if (res >= 0)
+            backward_predictor_result++;
+        else
+            backward_predictor_result--;
+        result[i] = std::max(result[i], res);
+    }
+
+    // Log the results to the saturating counter for better future performance.
+    if (should_swap) {
+        std::reverse(result.begin(), result.end());
+        std::swap(forward_predictor_result, backward_predictor_result);
+    }
+    index.predictor.log_result(forward_predictor_result, backward_predictor_result);
+
+    return v;
+}
+
+void streaming_query_from_fastq_file(fms_index& index,                    //
+                                     essentials::json_lines& perf_stats,  //
+                                     std::istream& is)                    //
+{
+    essentials::timer<std::chrono::high_resolution_clock, std::chrono::microseconds> t;
+
+    t.start();
+    uint64_t total_num_kmers = 0;
+    uint64_t num_positive_kmers = 0;
+    std::string line;
+    const uint64_t k = index.get_k();
+    while (!is.eof()) {
+        /* We assume the file is well-formed, i.e., there are exactly 4 lines per read. */
+        std::getline(is, line);  // skip first header line
+        std::getline(is, line);
+        if (line.size() >= k) {
+            char* sequence = line.c_str();
+            uint64_t sequence_length = line.size();
+            char* rc_sequence = ReverseComplementString(sequence, sequence_length);
+            std::vector<int64_t> v =
+                query_kmers_streaming(index, sequence, rc_sequence, sequence_length, k);
+            for (auto x : v) num_positive_kmers += x >= 0;
+            total_num_kmers += v.size();
+            essentials::do_not_optimize_away(v[0]);
+            free(rc);
+        }
+        std::getline(is, line);  // skip '+'
+        std::getline(is, line);  // skip score
+    }
+    t.stop();
+
+    perf_stats.add("total_num_kmers", total_num_kmers);
+    perf_stats.add("num_positive_kmers", num_positive_kmers);
+    perf_stats.add("elapsed_ms", t.elapsed() / 1000);
+    perf_stats.add("avg_nanosec_per_kmer", (t.elapsed() * 1000) / total_num_kmers);
+}
 
 int main(int argc, char** argv)  //
 {
@@ -198,20 +270,21 @@ int main(int argc, char** argv)  //
     perf_stats.add("index_filename", index_filename.c_str());
     perf_stats.add("k", index.k);
 
-    if (query_filename.empty()) { perf_test_lookup(index, perf_stats); }
-    // else {
-    //     std::ifstream is(query_filename.c_str());
-    //     if (!is.good()) {
-    //         std::cerr << "error in opening the file '" + query_filename + "'" << std::endl;
-    //         return 1;
-    //     }
-    //     perf_stats.add("query_filename", query_filename.c_str());
-    //     essentials::logger("performing queries from file '" + query_filename + "'...");
-    //     zip_istream zis(is);
-    //     streaming_query_from_fastq_file(index, perf_stats, zis);
-    //     is.close();
-    //     essentials::logger("DONE");
-    // }
+    if (query_filename.empty()) {
+        perf_test_lookup(index, perf_stats);
+    } else {
+        std::ifstream is(query_filename.c_str());
+        if (!is.good()) {
+            std::cerr << "error in opening the file '" + query_filename + "'" << std::endl;
+            return 1;
+        }
+        perf_stats.add("query_filename", query_filename.c_str());
+        essentials::logger("performing queries from file '" + query_filename + "'...");
+        zip_istream zis(is);
+        streaming_query_from_fastq_file(index, perf_stats, zis);
+        is.close();
+        essentials::logger("DONE");
+    }
 
     perf_stats.print();
 

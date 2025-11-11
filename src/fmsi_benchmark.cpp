@@ -32,7 +32,13 @@ void perf_test_lookup(fms_index& index,                    //
         lookup_queries.reserve(num_queries);
 
         {
-            std::ifstream in("kmers.txt");
+            std::ifstream in("queries.txt");
+            if (!in.good()) {
+                std::cout
+                    << "Error: 'queries.txt' file not found: first run `./sshash_benchmark ...`"
+                    << std::endl;
+                return;
+            }
             std::string s;
             for (uint64_t i = 0; i != num_queries and in; ++i) {
                 in >> s;

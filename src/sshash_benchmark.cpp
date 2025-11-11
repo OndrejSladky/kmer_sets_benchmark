@@ -2,14 +2,13 @@
 
 #include "sshash/tools/common.hpp"
 #include "sshash/include/streaming_query.hpp"
-
 #include "sshash/src/dictionary.cpp"
 #include "sshash/src/query.cpp"
 #include "sshash/src/info.cpp"
 
-using namespace sshash;
+#include "common.hpp"
 
-using timer_type = essentials::timer<std::chrono::high_resolution_clock, std::chrono::nanoseconds>;
+using namespace sshash;
 
 void perf_test_lookup_access(dictionary_type const& index, essentials::json_lines& perf_stats)  //
 {
@@ -47,7 +46,7 @@ void perf_test_lookup_access(dictionary_type const& index, essentials::json_line
         }
 
         uint64_t num_positive_kmers = 0;
-        timer_type t;
+        bench::timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
@@ -68,10 +67,10 @@ void perf_test_lookup_access(dictionary_type const& index, essentials::json_line
         std::vector<std::string> lookup_queries;
         lookup_queries.reserve(num_queries);
         for (uint64_t i = 0; i != num_queries; ++i) {
-            random_kmer(kmer.data(), k);
+            bench::random_kmer(kmer.data(), k);
             lookup_queries.push_back(kmer);
         }
-        timer_type t;
+        bench::timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto const& string : lookup_queries) {
@@ -90,7 +89,7 @@ void perf_test_lookup_access(dictionary_type const& index, essentials::json_line
         std::vector<uint64_t> access_queries;
         access_queries.reserve(num_queries);
         for (uint64_t i = 0; i != num_queries; ++i) access_queries.push_back(distr.gen());
-        timer_type t;
+        bench::timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto id : access_queries) {

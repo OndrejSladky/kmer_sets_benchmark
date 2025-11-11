@@ -1,8 +1,6 @@
 #include <iostream>
 
 #include "sshash/external/pthash/external/cmd_line_parser/include/parser.hpp"
-#include "sshash/external/gz/zip_stream.hpp"
-#include "sshash/external/gz/zip_stream.cpp"
 
 #include "fmsi/src/fms_index.h"
 #include "fmsi/src/QSufSort.c"
@@ -41,7 +39,7 @@ void perf_test_lookup(fms_index& index,                    //
         }
 
         uint64_t num_positive_kmers = 0;
-        timer_type t;
+        bench::timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto& string : lookup_queries) {
@@ -67,11 +65,11 @@ void perf_test_lookup(fms_index& index,                    //
         std::vector<std::string> lookup_queries;
         lookup_queries.reserve(num_queries);
         for (uint64_t i = 0; i != num_queries; ++i) {
-            random_kmer(kmer.data(), k);
+            bench::random_kmer(kmer.data(), k);
             lookup_queries.push_back(kmer);
         }
 
-        timer_type t;
+        bench::timer_type t;
         t.start();
         for (uint64_t r = 0; r != runs; ++r) {
             for (auto& string : lookup_queries) {
@@ -91,7 +89,7 @@ void perf_test_lookup(fms_index& index,                    //
     //     std::vector<uint64_t> access_queries;
     //     access_queries.reserve(num_queries);
     //     for (uint64_t i = 0; i != num_queries; ++i) access_queries.push_back(distr.gen());
-    //     timer_type t;
+    //     bench::timer_type t;
     //     t.start();
     //     for (uint64_t r = 0; r != runs; ++r) {
     //         for (auto id : access_queries) {

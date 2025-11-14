@@ -82,5 +82,7 @@ return the same results as for the other indexes.
 <p align="center"><b>Tab. 2 SBWT results</b></p>
 
 
+FMSI indexes make use of the LCP array to speed up streaming queries.
+
 ![](results/results-fmsi.png)
 <p align="center"><b>Tab. 3 FMSI results</b></p>

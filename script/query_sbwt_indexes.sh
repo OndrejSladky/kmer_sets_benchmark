@@ -2,6 +2,9 @@
 
 results_filename_prefix=$1
 
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DUSE_MAX_KMER_LENGTH_63=Off
+make -j
+
 ./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/cod.k31.canon.sshash
 ./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k31.sbwt 2>> $results_filename_prefix.k31.bench.json
 ./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k31.rc.sbwt 2>> $results_filename_prefix.k31.bench.json
@@ -31,3 +34,39 @@ results_filename_prefix=$1
 ./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k31.sbwt 2>> $results_filename_prefix.k31.bench.json
 ./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k31.rc.sbwt 2>> $results_filename_prefix.k31.bench.json
 ./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k31.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/SRR5833294.fastq.gz 2>> $results_filename_prefix.k31.streaming-query-high-hit.json
+
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DUSE_MAX_KMER_LENGTH_63=On
+make -j
+
+./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/cod.k63.canon.sshash
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k63.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k63.rc.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k63.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/SRR12858649.fastq.gz 2>> $results_filename_prefix.k63.streaming-query-high-hit.json
+
+./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/kestrel.k63.canon.sshash
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/kestrel.k63.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/kestrel.k63.rc.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/kestrel.k63.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/SRR11449743_1.fastq.gz 2>> $results_filename_prefix.k63.streaming-query-high-hit.json
+
+./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/human.k63.canon.sshash
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/human.k63.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/human.k63.rc.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/human.k63.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/SRR5833294.fastq.gz 2>> $results_filename_prefix.k63.streaming-query-high-hit.json
+
+./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/ncbi-virus.k63.canon.sshash
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/ncbi-virus.k63.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/ncbi-virus.k63.rc.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/ncbi-virus.k63.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/ncbi-queries.fastq.gz 2>> $results_filename_prefix.k63.streaming-query-high-hit.json
+
+./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/se.k63.canon.sshash
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/se.k63.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/se.k63.rc.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/se.k63.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/SRR27871075_1.fastq.gz 2>> $results_filename_prefix.k63.streaming-query-high-hit.json
+
+./sshash_benchmark -i /mnt/hd2/pibiri/DNA/sshash-indexes/hprc.k63.canon.sshash
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k63.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k63.rc.sbwt 2>> $results_filename_prefix.k63.bench.json
+./sbwt_benchmark -i /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k63.rc.sbwt -q /mnt/hd2/pibiri/DNA/queries/SRR5833294.fastq.gz 2>> $results_filename_prefix.k63.streaming-query-high-hit.json
+
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DUSE_MAX_KMER_LENGTH_63=Off
+make -j

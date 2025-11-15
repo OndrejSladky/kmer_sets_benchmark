@@ -16,8 +16,10 @@ Clone and compile as follows.
 	cd kmer_sets_benchmark/
 	mkdir build
 	cd build/
-	cmake ..
+	cmake .. -DUSE_MAX_KMER_LENGTH_63=Off
 	make -j
+
+Optionally, compile with `cmake .. -DUSE_MAX_KMER_LENGTH_63=On` to use k=63 in the benchmark.
 
 ### Tested dictionaries
 
@@ -34,15 +36,14 @@ All C++ implementations are by the respective authors.
 For these benchmarks we used the datasets available here
 [https://zenodo.org/records/17582116](https://zenodo.org/records/17582116): the files `*.eulertigs.fa.gz` were used as input, the `*.fastq.gz` files were used as queries instead.
 
-| Collection |       Num. distinct 31-mers |
-|------------|----------------------------:|
-| Cod        |                 502,465,200 |
-| Kestrel    |               1,150,399,205 |
-| Human      |               2,505,678,680 |
-| NCBI-virus |                 376,205,185 |
-| SE         |                 894,310,084 |
-| HPRC       |               3,718,120,949 |
-
+| Collection | Num. distinct 31-mers | Num. distinct 63-mers |
+|------------|----------------------:|----------------------:|
+| Cod        |           502,465,200 |           556,585,658 |
+| Kestrel    |         1,150,399,205 |         1,155,250,667 |
+| Human      |         2,505,678,680 |         2,771,316,093 |
+| NCBI-virus |           376,205,185 |           412,515,880 |
+| SE         |           894,310,084 |         1,524,904,156 |
+| HPRC       |         3,718,120,949 |         5,926,785,469 |
 
 ### Methodology
 

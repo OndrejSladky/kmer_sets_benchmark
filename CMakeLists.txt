@@ -6,8 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
 
 # === Step 1: Add SBWT and SSHash as subdirectories ===
+
+if (USE_MAX_KMER_LENGTH_63)
+    message(STATUS "SSHash and SBWT use a maximum kmer length of 63")
+    add_compile_options(-DSSHASH_USE_MAX_KMER_LENGTH_63)
+    add_compile_options(-DMAX_KMER_LENGTH=63)
+endif()
+
 # This ensures SBWT gets built.
 add_subdirectory(external/SBWT ${CMAKE_BINARY_DIR}/sbwt_build)
+
 # This ensures SSHash gets built.
 add_subdirectory(external/sshash ${CMAKE_BINARY_DIR}/sshash_build)
 

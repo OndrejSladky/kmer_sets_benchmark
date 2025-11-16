@@ -1,0 +1,276 @@
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/cod.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k63.sbwt"
+	User time (seconds): 232.51
+	System time (seconds): 55.46
+	Percent of CPU this job got: 160%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:59.44
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15545536
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 6362228
+	Voluntary context switches: 99310
+	Involuntary context switches: 11043
+	Swaps: 0
+	File system inputs: 16
+	File system outputs: 75037672
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/cod.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --add-reverse-complements --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/cod.k63.rc.sbwt"
+	User time (seconds): 454.51
+	System time (seconds): 81.09
+	Percent of CPU this job got: 143%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 6:13.81
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15575436
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 7200481
+	Voluntary context switches: 152952
+	Involuntary context switches: 19331
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 144998176
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/kestrel.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/kestrel.k63.sbwt"
+	User time (seconds): 424.00
+	System time (seconds): 84.35
+	Percent of CPU this job got: 148%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:42.47
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15560240
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 7444704
+	Voluntary context switches: 180657
+	Involuntary context switches: 20215
+	Swaps: 0
+	File system inputs: 658000
+	File system outputs: 150891880
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/kestrel.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --add-reverse-complements --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/kestrel.k63.rc.sbwt"
+	User time (seconds): 888.95
+	System time (seconds): 139.34
+	Percent of CPU this job got: 116%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 14:38.96
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15567596
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 9704584
+	Voluntary context switches: 336052
+	Involuntary context switches: 41128
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 301991024
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/human.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/human.k63.sbwt"
+	User time (seconds): 982.34
+	System time (seconds): 159.44
+	Percent of CPU this job got: 115%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 16:30.38
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15577396
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 10473658
+	Voluntary context switches: 402933
+	Involuntary context switches: 48639
+	Swaps: 0
+	File system inputs: 392
+	File system outputs: 367613728
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/human.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --add-reverse-complements --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/human.k63.rc.sbwt"
+	User time (seconds): 2093.97
+	System time (seconds): 302.99
+	Percent of CPU this job got: 71%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 55:38.80
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15591300
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 15065882
+	Voluntary context switches: 864064
+	Involuntary context switches: 90559
+	Swaps: 0
+	File system inputs: 250976712
+	File system outputs: 721535000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/ncbi-virus.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/ncbi-virus.k63.sbwt"
+	User time (seconds): 176.59
+	System time (seconds): 44.18
+	Percent of CPU this job got: 164%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:14.40
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 12251000
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 5273783
+	Voluntary context switches: 67087
+	Involuntary context switches: 8309
+	Swaps: 0
+	File system inputs: 274400
+	File system outputs: 56180504
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/ncbi-virus.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --add-reverse-complements --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/ncbi-virus.k63.rc.sbwt"
+	User time (seconds): 348.23
+	System time (seconds): 67.77
+	Percent of CPU this job got: 147%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 4:42.36
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15573712
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 6660616
+	Voluntary context switches: 132683
+	Involuntary context switches: 15383
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 107770784
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/se.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/se.k63.sbwt"
+	User time (seconds): 930.26
+	System time (seconds): 121.55
+	Percent of CPU this job got: 178%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 9:47.65
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15567064
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 12083619
+	Voluntary context switches: 220231
+	Involuntary context switches: 29231
+	Swaps: 0
+	File system inputs: 1679736
+	File system outputs: 249445096
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/se.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --add-reverse-complements --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/se.k63.rc.sbwt"
+	User time (seconds): 1346.76
+	System time (seconds): 171.01
+	Percent of CPU this job got: 116%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 21:37.89
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15590052
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 11770330
+	Voluntary context switches: 453822
+	Involuntary context switches: 57312
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 410132304
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/hprc.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k63.sbwt"
+	User time (seconds): 3434.88
+	System time (seconds): 420.06
+	Percent of CPU this job got: 88%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:12:44
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15590224
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 30711839
+	Voluntary context switches: 1080449
+	Involuntary context switches: 108938
+	Swaps: 0
+	File system inputs: 500084104
+	File system outputs: 934916960
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "./sbwt_build/bin/sbwt build -i /mnt/hd2/pibiri/DNA/eulertigs/hprc.k63.eulertigs.fa.gz -k 63 -m 16 -t 64 -d /mnt/hd2/pibiri/DNA/tmp_dir/ --add-reverse-complements --verbose -o /mnt/hd2/pibiri/DNA/sbwt-indexes/hprc.k63.rc.sbwt"
+	User time (seconds): 4780.91
+	System time (seconds): 778.49
+	Percent of CPU this job got: 50%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:01:52
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 23036780
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 20889224
+	Voluntary context switches: 2283564
+	Involuntary context switches: 209702
+	Swaps: 0
+	File system inputs: 1682845064
+	File system outputs: 1519094024
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
